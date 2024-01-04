@@ -54,6 +54,7 @@ class DataIngestion:
         except Exception as e:
             raise NetworkException(e, sys)
 
+
     def initiate_data_ingestion(self) -> DataIngestionArtifact:
         logging.info("Entered initiate_data_ingestion method of DataIngestion class")
 

@@ -2,12 +2,12 @@ import os
 import sys
 from typing import Dict, Union
 
-import bentoml
+#import bentoml
 import dill
 import numpy as np
 import yaml
 
-#from network.cloud_storage.aws_operations import S3Sync
+from network.cloud_storage.aws_operations import S3Sync
 from network.constants import training_pipeline
 from network.exception import NetworkException
 from network.logger import logging
@@ -183,7 +183,7 @@ def sync_artifacts() -> None:
     except Exception as e:
         raise NetworkException(e, sys)
 
-
+'''
 def build_and_push_bento_image(model_uri: str) -> None:
     """
     It takes a model URI as input, imports the model into BentoML, containerizes it, and pushes it to
@@ -227,3 +227,6 @@ def build_and_push_bento_image(model_uri: str) -> None:
 
     except Exception as e:
         raise NetworkException(e, sys)
+
+
+'''
