@@ -2,16 +2,19 @@ import sys
 
 from network.components.data_ingestion import DataIngestion
 from network.components.data_validation import DataValidation
+from network.components.data_transformation import DataTransformation
 
 from network.entity.artifact_entity import (
     DataIngestionArtifact,
-    DataValidationArtifact
+    DataValidationArtifact,
+    DataTransformationArtifact
 )
 
 from network.entity.config_entity import(
     TrainingPipelineConfig,
     DataIngestionConfig,
-    DataValidationConfig
+    DataValidationConfig,
+    DataTransformationConfig
 )
 
 from network.exception import NetworkException
@@ -84,6 +87,40 @@ class TrainPipeline:
             raise NetworkException(e, sys)
         
 
+    def start_data_transformation(
+        self, data_validation_artifact: DataValidationArtifact
+    ) -> DataTransformationArtifact:
+        """
+        It takes in a data validation artifact and returns a data transformation artifact
+
+        Args:
+          data_validation_artifact (DataValidationArtifact): DataValidationArtifact
+
+        Returns:
+          DataTransformationArtifact
+        """
+        try:
+            self.data_transformation_config: DataTransformationConfig = (
+                DataTransformationConfig(
+                    training_pipeline_config=self.training_pipeline_config
+                )
+            )
+
+            data_transformation: DataTransformation = DataTransformation(
+                data_validation_artifact=data_validation_artifact,
+                data_transformation_config=self.data_transformation_config,
+            )
+
+            data_transformation_artifact: DataTransformationArtifact = (
+                data_transformation.initiate_data_transformation()
+            )
+
+            return data_transformation_artifact
+
+        except Exception as e:
+            raise NetworkException(e, sys)
+        
+
     def run_pipeline(self):
         try:
             TrainPipeline.is_pipeline_running = True
@@ -99,6 +136,14 @@ class TrainPipeline:
             )
 
             print("Data Validation Completed!")
+
+            data_transformation_artifact: DataTransformationArtifact = (
+                self.start_data_transformation(
+                    data_validation_artifact=data_validation_artifact
+                )
+            )
+
+            print("Data Transformation Completed!")
 
         except Exception as e:
             raise NetworkException(e, sys)
